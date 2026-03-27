@@ -12,7 +12,7 @@ const getOne = async (req, res) => {
   const category = await categoryService.getById(id);
 
   if (!category) {
-    return res.status(404).json({ message: 'User not found' });
+    return res.status(404).json({ message: 'Category not found' });
   }
 
   res.json(category);
@@ -35,7 +35,7 @@ const remove = async (req, res) => {
   const category = await categoryService.getById(id);
 
   if (!category) {
-    return res.status(404).json({ message: 'User not found' });
+    return res.status(404).json({ message: 'Category not found' });
   }
 
   await categoryService.remove(id);
@@ -58,7 +58,7 @@ const update = async (req, res) => {
   const category = await categoryService.update({ id, name });
 
   if (!category) {
-    return res.status(404).json({ message: 'User not found' });
+    return res.status(404).json({ message: 'Category not found' });
   }
 
   res.json(category);

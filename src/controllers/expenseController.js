@@ -3,15 +3,16 @@
 
 const expenseService = require('../services/expenseService.js');
 const userService = require('../services/userService.js');
+const categoryService = require('../services/categoryService.js');
 const { parseDate } = require('../helpers/dateHelper.js');
 
 const getAll = async (req, res) => {
   const { userId, categories, from, to } = req.query;
 
-  const parsedFrom = parseDate(from);
-  const parsedTo = parseDate(to);
+  const parsedFrom = from ? parseDate(from) : undefined;
+  const parsedTo = to ? parseDate(to) : undefined;
 
-  if (parsedFrom === null || parsedTo === null) {
+  if ((from && parsedFrom === null) || (to && parsedTo === null)) {
     return res.status(400).send({ error: 'Invalid date format' });
   }
 
@@ -53,7 +54,7 @@ const create = async (req, res) => {
     return res.status(400).json({ message: 'Invalid date format' });
   }
 
-  if (!Number.isInteger(amount)) {
+  if (!Number.isInteger(Number(amount))) {
     return res.status(400).json({ message: 'Invalid amount format' });
   }
 
@@ -65,11 +66,21 @@ const create = async (req, res) => {
       .json({ message: `User with id=${userId} not found` });
   }
 
+  if (category !== undefined) {
+    const foundCategory = await categoryService.getByName(category);
+
+    if (!foundCategory) {
+      return res
+        .status(400)
+        .json({ message: `Category ${category} not found` });
+    }
+  }
+
   const newExpense = await expenseService.create({
     userId: Number(userId),
     spentAt,
     title,
-    amount,
+    amount: Number(amount),
     category,
     note,
   });
@@ -106,11 +117,21 @@ const update = async (req, res) => {
     return res.status(400).send({ error: 'Invalid amount format' });
   }
 
+  if (category !== undefined) {
+    const foundCategory = await categoryService.getByName(category);
+
+    if (!foundCategory) {
+      return res
+        .status(400)
+        .json({ message: `Category ${category} not found` });
+    }
+  }
+
   const updatedExpense = await expenseService.update({
     id,
     spentAt,
     title,
-    amount,
+    amount: Number(amount),
     category,
     note,
   });

@@ -10,6 +10,12 @@ const getById = async (id) => {
   return category ? category.toJSON() : null;
 };
 
+const getByName = async (name) => {
+  const category = await Category.findOne({ where: { name } });
+
+  return category ? category.toJSON() : null;
+};
+
 const create = async (name) => {
   const category = await Category.create({ name });
 
@@ -45,6 +51,7 @@ const clear = async () => {
 module.exports = {
   getAll,
   getById,
+  getByName,
   create,
   remove,
   update,
