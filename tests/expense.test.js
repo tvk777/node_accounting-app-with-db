@@ -112,6 +112,7 @@ describe('Expense', () => {
         title: 'Buy a new laptop',
         amount: 999,
         userId: user.id,
+        category: 'laptops',
       };
 
       const response = await api.post('/expenses', data);

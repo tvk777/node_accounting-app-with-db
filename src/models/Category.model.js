@@ -3,8 +3,8 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../db.js');
 
-const User = sequelize.define(
-  'User',
+const Category = sequelize.define(
+  'Category',
   {
     name: {
       type: DataTypes.STRING,
@@ -12,11 +12,11 @@ const User = sequelize.define(
     },
   },
   {
-    tableName: 'users',
+    tableName: 'categories',
     timestamps: false,
   },
 );
 
 module.exports = {
-  User,
+  Category,
 };
