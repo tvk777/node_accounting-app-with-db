@@ -109,6 +109,16 @@ const update = async (req, res) => {
     return res.status(404).json({ message: 'Expense not found' });
   }
 
+  if (
+    spentAt === undefined &&
+    title === undefined &&
+    amount === undefined &&
+    category === undefined &&
+    note === undefined
+  ) {
+    return res.status(400).json({ message: 'No data to update' });
+  }
+
   if (spentAt && parseDate(spentAt) === null) {
     return res.status(400).send({ error: 'Invalid date format' });
   }
@@ -131,12 +141,12 @@ const update = async (req, res) => {
     id,
     spentAt,
     title,
-    amount: Number(amount),
+    amount: amount !== undefined ? Number(amount) : undefined,
     category,
     note,
   });
 
-  res.send(updatedExpense);
+  res.status(200).json(updatedExpense);
 };
 
 module.exports = {

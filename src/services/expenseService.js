@@ -65,12 +65,7 @@ const remove = async (id) => {
 };
 
 const update = async ({ id, spentAt, title, amount, category, note }) => {
-  const expense = await Expense.findByPk(id);
   const updates = {};
-
-  if (!expense) {
-    return null;
-  }
 
   if (spentAt !== undefined) {
     updates.spentAt = spentAt;
@@ -92,9 +87,20 @@ const update = async ({ id, spentAt, title, amount, category, note }) => {
     updates.note = note;
   }
 
-  const updated = await expense.update(updates);
+  // Update returns an array: [affectedCount]
+  const [affectedCount] = await Expense.update(updates, {
+    where: { id },
+    returning: true,
+  });
 
-  return updated.toJSON();
+  if (affectedCount === 0) {
+    return null; // not found
+  }
+
+  // fetch updated expense
+  const updatedExpense = await Expense.findByPk(id);
+
+  return updatedExpense.toJSON();
 };
 
 const clear = async () => {
