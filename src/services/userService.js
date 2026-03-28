@@ -17,13 +17,11 @@ const create = async (name) => {
 };
 
 const remove = async (id) => {
-  const user = await User.findByPk(id);
+  const result = await User.destroy({
+    where: { id },
+  });
 
-  if (!user) {
-    return false;
-  }
-
-  await user.destroy();
+  return result > 0;
 };
 
 const update = async ({ id, name }) => {

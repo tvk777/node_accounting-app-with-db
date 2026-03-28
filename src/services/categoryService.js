@@ -2,7 +2,11 @@ const {
   models: { Category },
 } = require('../models/models');
 
-const getAll = async () => Category.findAll();
+const getAll = async () => {
+  const categories = await Category.findAll();
+
+  return categories.map((c) => c.toJSON());
+};
 
 const getById = async (id) => {
   const category = await Category.findByPk(id);
@@ -23,13 +27,11 @@ const create = async (name) => {
 };
 
 const remove = async (id) => {
-  const category = await Category.findByPk(id);
+  const result = await Category.destroy({
+    where: { id },
+  });
 
-  if (!category) {
-    return false;
-  }
-
-  await category.destroy();
+  return result > 0;
 };
 
 const update = async ({ id, name }) => {
